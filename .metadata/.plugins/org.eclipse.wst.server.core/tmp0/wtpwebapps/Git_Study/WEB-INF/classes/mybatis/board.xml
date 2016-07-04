@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="board">
+ 
+   <select id="selectAll" resultType="java.util.HashMap">
+        SELECT * FROM  board order by ref asc;
+   </select>
+
+   <insert id="insertBoard" parameterType="model.board.BoardDto">
+		insert into
+		board (writer, subject, email, content, password, wdate , ip, ref, ref_step, ref_level, readcount)
+		values(#{writer},#{subject},#{email},#{content},#{password},NOW(),#{ip}, #{ref}, #{ref_step},#{ref_level}, #{readcount})
+	</insert>
+
+   <update id="readCount" parameterType="int">
+     update board set readcount=readcount+1 
+     where num=#{num}
+   </update>
+
+	<update id="updateRef">
+     update board set ref=ref+1
+   </update>
+
+   <select id="selectOne" parameterType="int" resultType="model.board.BoardDto">
+     select * from board
+     where num=#{num}
+   </select>
+   
+   <update id="updateBoard" parameterType="model.board.BoardDto">
+		update board set
+		writer=#{writer}, subject=#{subject}, email=#{email}, content=#{content}
+		where num=#{num};
+	</update>
+   
+   <delete id="deleteBoard" parameterType="int">
+	  delete from board
+	  where num=#{num}
+	</delete>
+ </mapper>

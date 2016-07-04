@@ -1,0 +1,195 @@
+package co.kr.han;
+
+import java.io.IOException;
+
+
+
+import javax.naming.NamingException;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
+
+import model.board.BoardDto;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.ibatis.session.SqlSession;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Vector;
+
+@Controller
+public class BoardController {
+	
+	
+	@Autowired
+	private SqlSession sqlSession; //변수 선언 앞에 어노테이션 붙이면 자동으로 셋터 작업이 된다.
+
+	@RequestMapping("/list.do")
+	public ModelAndView boardList(Integer startRecordInput, Integer endRecordInput){
+		//System.out.println("test");
+		
+		int startRecord=0;
+		int endRecord=10;
+
+		int nowPage=1;
+		int nowBlock=0;
+				
+		int pagePerBlock=10;
+		int numberPerPage=10;
+		
+		//startRecord=startRecordInput;
+		//endRecord=endRecordInput;
+		
+		//nowPage=startRecord/10 + 1;
+		
+		
+		
+		//list.do 가 실행 될때 마다, 시작 글, 끝글을 계산해낸다. (매개변수로 받아낸다. GET)
+		//nowPage(이것은 GET으로), nowBlock(시작글 번호로 계산해낸다.) 을 계산해낸다.
+		
+		List<HashMap<String, String>> list= sqlSession.selectList("board.selectAll");
+		Vector<HashMap<String, String>> listIndex= new Vector<HashMap<String, String>>();
+		Vector<HashMap<String, String>> listReturn= new Vector<HashMap<String, String>>();
+		
+		//for()
+		
+		int count=0;
+		for(HashMap<String, String> a : list){
+			
+			//System.out.println(a.get("num"));
+			//System.out.println("count!: "+count);
+			listIndex.add(count, a);
+			count++;
+			
+		}//모든 게시글에 글 번호를 부여한다. 페이징을 하기 위해서!
+		
+		for(int i=startRecord;i<endRecord;i++){
+			if(i==listIndex.size()){break;}
+			listReturn.add(listIndex.get(i));
+		}
+		
+		
+		
+		/*System.out.println(listIndex.get(1).get("content"));
+		for(int i=0; i < listIndex.size(); i++){
+		System.out.println("test"+listIndex.get(i).get("content"));
+		}*/
+		//System.out.println(listIndex.size());
+		//System.out.println(listIndex.get(1));
+			
+		return new ModelAndView("/board/list", "listReturn", listReturn);
+		
+	}//home();
+	
+	
+	//=================답글
+	@RequestMapping("/reply.do")
+	public ModelAndView replyForm(int num) {
+		
+		sqlSession.update("board.readCount", new Integer(num));//조회수
+ 		
+ 		BoardDto boardDto = (BoardDto)sqlSession.selectOne("board.selectOne", num);
+ 		
+ 		boardDto.setSubject("답글 : "+boardDto.getSubject());
+ 		boardDto.setContent("본문 내용 :\n "+boardDto.getContent());
+ 		
+ 		
+		return new ModelAndView("/board/WriteForm","boardDto",boardDto);
+//       return "/board/WriteForm";//뷰
+	}//writeForm ()
+	
+	
+	// insert reply
+		@RequestMapping(value="/reply.do", method = RequestMethod.POST)
+		public String replyPro(@ModelAttribute("BoardDto") BoardDto boardDto, HttpServletRequest request)
+				throws NamingException,IOException 
+			{
+			int readcount=0;
+			String ip=request.getRemoteAddr();//ip구하고 
+			
+			boardDto.setIp(ip);
+			boardDto.setReadcount(readcount);
+			
+			sqlSession.update("board.updateRef");
+			sqlSession.insert("board.insertBoard", boardDto);
+			 
+			 
+			return "redirect:list.do";
+		}// ------------------------------------------
+	//=========================================================================
+	
+
+	@RequestMapping("/WriteForm.do")
+	public String writeForm() {
+       return "/board/WriteForm";//뷰
+	}//writeForm ()
+
+	// insert
+	@RequestMapping(value="/write.do", method = RequestMethod.POST)
+	public String userWritePro(@ModelAttribute("BoardDto") BoardDto boardDto, HttpServletRequest request)
+			throws NamingException,IOException 
+		{
+		
+		int pos=0;
+		int depth=0;
+		int readcount=0;
+		String ip=request.getRemoteAddr();//ip구하고 
+		
+		boardDto.setIp(ip);
+		//boardDto2.setPos(pos);
+		//boardDto2.setDepth(depth);
+		boardDto.setReadcount(readcount);
+		
+		sqlSession.update("board.updateRef");
+		sqlSession.insert("board.insertBoard", boardDto);
+		 
+		 
+		return "redirect:list.do";
+	}// ------------------------------------------
+
+
+	//조회수 증가 ,글내용보기
+	@RequestMapping("content.do")
+	public ModelAndView getOneBoard(int num) {
+ 		sqlSession.update("board.readCount", new Integer(num));//조회수
+ 		
+ 		BoardDto boardDto = (BoardDto)sqlSession.selectOne("board.selectOne", num);
+ 		 
+ 		return new ModelAndView("/board/content","boardDto",boardDto);
+	 
+	}//getOneBoard()
+	
+	//글수정 폼
+		@RequestMapping(value="/edit.do", method = RequestMethod.GET)
+		public ModelAndView userEdit(int num) {
+			BoardDto boardDto = (BoardDto)sqlSession.selectOne("board.selectOne", num);
+		 
+	 		return new ModelAndView("/board/edit","boardDto",boardDto);
+		}// ---
+		
+		//글수정 
+		@RequestMapping(value = "/edit.do", method = RequestMethod.POST)
+		public String updateBoard(@ModelAttribute("boardDto") BoardDto boardDto) 
+				throws NamingException,IOException
+		{
+			sqlSession.update("board.updateBoard", boardDto);
+			 
+			return "redirect:list.do";
+		}
+
+		//글삭제
+		@RequestMapping("delete.do")
+		public String deleteBoard(int num) throws NamingException,IOException {
+			sqlSession.delete("board.deleteBoard", num);
+			 
+			return "redirect:list.do";
+		}
+
+	
+}//class end
+
