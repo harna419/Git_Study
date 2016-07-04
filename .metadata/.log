@@ -451,3 +451,9 @@ Java Model Exception: Java Model Status [board [in src/main/java [in Git_Study]]
 
 !ENTRY org.eclipse.m2e.logback.appender 2 0 2016-07-04 12:43:48.148
 !MESSAGE Using platform encoding (MS949 actually) to copy filtered resources, i.e. build is platform dependent!
+
+!ENTRY org.eclipse.m2e.logback.appender 2 0 2016-07-04 12:46:58.860
+!MESSAGE Using platform encoding (MS949 actually) to copy filtered resources, i.e. build is platform dependent!
+
+!ENTRY org.eclipse.m2e.logback.appender 2 0 2016-07-04 12:46:58.863
+!MESSAGE Using platform encoding (MS949 actually) to copy filtered resources, i.e. build is platform dependent!
