@@ -6,16 +6,12 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Board2 예제 글쓰기 폼</title>
+<title>Board ORI 예제 글쓰기 폼</title>
 
 <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
   
 <script type="text/javascript">
 
-function switchCheck(){
-	
-	
-}
 
 function writeFormCheck() {
 	
@@ -37,6 +33,35 @@ function writeFormCheck() {
       return true;
 }//writeFormCheck() end
 
+function flagCheck(){
+
+	
+	
+		
+	if($("#flag").val() == 0 ){
+	alert("밸류 0");
+	//document.writeForm.action="write.do"
+	//document.writeForm.action="write.do"
+	//alert(document.writeForm.action);
+	
+	$("#writeForm").attr('action', 'write.do');
+	
+	//alert($("#writeForm").val());
+	$("#writeForm").submit();
+	//document.writeForm.submit;
+	}
+	
+	
+	if($("#flag").val() == 1 ){
+		alert("밸류 1");
+		//document.writeForm.action="reply.do"
+		$("#writeForm").attr('action', 'reply.do');
+		$("#writeForm").submit();
+		//alert($("#writeForm").val());
+		//document.writeForm.submit;
+	}
+	
+}
 
 
 
@@ -52,12 +77,16 @@ function writeFormCheck() {
 <body>
 	<h2 align="center">게시판 글쓰기폼</h2>
 	<a href="list.do">리스트</a>
-    <form name="writeForm" method="post">	
- 	<table>
+    <!-- 
+    <form name="writeForm" method="post" action="write.do" onsubmit="return writeFormCheck()">	
+ 	 -->
+ 	 <form id="writeForm" name="writeForm" method="post" action="write.do" >
+ 	 
+ 	<table align="center" width="800">
  	
  		<tr>
           <td>글쓴이</td>
-          <td><input type="text" id="writer" name="writer" size="10" /> </td>
+          <td><input type="text" id="writer" name="writer" size="10" value="${falg }" /> </td>
         </tr>
  		<tr>
           <td>글제목</td>
@@ -79,9 +108,15 @@ function writeFormCheck() {
         
         <tr>
           <td colspan="2" align="center">
+            <!-- 
             <input type="button" value="글등록" onclick="writeFormCheck()">
+            
+            <input type="submit" value="글등록" >
+            -->
+            <input type="button" value="글등록" onclick="flagCheck()">
+            
             <input type="reset" value="입력한내용취소">
-            <input type="hidden" name="switch" value="${boardDto.content }">
+            <input type="hidden" id="flag" name="flag" value="${boardDto.flag}">
             
           </td>
         </tr>

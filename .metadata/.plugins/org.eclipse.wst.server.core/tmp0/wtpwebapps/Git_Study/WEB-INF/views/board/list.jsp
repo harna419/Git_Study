@@ -8,7 +8,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Git러브 테스트 프로젝트 Board 예제 리스트 다시 테스트 한다.</title>
+<title>Board2 예제 리스트</title>
 
 <style type="text/css">
   table{
@@ -33,7 +33,7 @@
 <table width="800" border="1" align="center">
 <tr>
 <td align="right">
-<a href="WriteForm.do">글쓰기</a>
+<a href="WriteForm.do?flag=0">글쓰기</a>
 </td>
 </tr>
 </table>
@@ -65,6 +65,20 @@
 		</tr>
 	</c:forEach>
 </table>
+
+<table border="1" width="800" align="center">
+	<tr>
+	<td>
+	<!-- list.do에 들어왔을때, 필요한 변수, 현재페이지, 시작레코드, 끝 레코드, -->
+	<c:forEach var="i" begin="1" end="10" step="1"	>
+	
+		<a href="list.do?pageNum=${i } }">[${i }]</a>
+		
+	</c:forEach>
+	</td>
+	</tr>
+</table>
+
 
 </body>
 </html>

@@ -3,8 +3,6 @@ INDEX VERSION 1.3+D:\01_WorkSpace\00_Git_Source\Git_Study\.metadata\.plugins\org
 911706961.index
 3620281889.index
 3189548119.index
-3857025245.index
-2614015277.index
 1570548299.index
-3189548119.index
-3893513091.index
+2614015277.index
+3857025245.index

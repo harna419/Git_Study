@@ -16,18 +16,9 @@ public class BoardDto {
 	private int ref;
 	private int ref_step;
 	private int ref_level;
-	private String ip;
-
-	private int flag; //답글 확인 용
 	
-	public int getFlag() {
-		return flag;
-	}
-
-
-	public void setFlag(int flag) {
-		this.flag = flag;
-	}
+	
+	private String ip;
 
 
 	public int getNum() {

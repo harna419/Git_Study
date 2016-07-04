@@ -22,8 +22,8 @@
         <td height="40px" align="center">
           <a href="edit.do?num=${boardDto.num }">글수정</a>&nbsp;
           <a href="delete.do?num=${boardDto.num }">글삭제</a>	&nbsp;
-          <a href="reply.do?num=${boardDto.num }">답글 쓰기</a>	&nbsp;
-          <a href="WriteForm.do">글쓰기</a>&nbsp;
+          <a href="reply.do?num=${boardDto.num }&flag=1">답글 쓰기</a>	&nbsp;
+          <a href="WriteForm.do?flag=0">글쓰기</a>&nbsp;
           <a href="list.do">리스트</a>
         </td>
       </tr>

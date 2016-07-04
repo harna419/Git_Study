@@ -88,34 +88,71 @@ public class BoardController {
 		
 	}//home();
 	
-	
-	//=================답글
-	@RequestMapping("/reply.do")
-	public ModelAndView replyForm(int num) {
+
+	//=================답글===============================================================
+		@RequestMapping("/reply.do")
+		public ModelAndView replyForm(int num, int flag) {
+			
+			//sqlSession.update("board.readCount", new Integer(num));//조회수
+	 		
+	 		BoardDto boardDto = (BoardDto)sqlSession.selectOne("board.selectOne", num);
+	 		
+	 		boardDto.setFlag(flag); 
+	 		boardDto.setSubject("답글 : "+boardDto.getSubject());
+	 		boardDto.setContent("본문 내용 :\n===========================\n "+boardDto.getContent() +"\n===========================\n");
+	 		
+	 		
+			return new ModelAndView("/board/WriteForm","boardDto",boardDto);
+
+		}//writeForm ()
 		
-		sqlSession.update("board.readCount", new Integer(num));//조회수
- 		
- 		BoardDto boardDto = (BoardDto)sqlSession.selectOne("board.selectOne", num);
- 		
- 		boardDto.setSubject("답글 : "+boardDto.getSubject());
- 		boardDto.setContent("본문 내용 :\n "+boardDto.getContent());
- 		
- 		
-		return new ModelAndView("/board/WriteForm","boardDto",boardDto);
-//       return "/board/WriteForm";//뷰
-	}//writeForm ()
-	
-	
-	// insert reply
-		@RequestMapping(value="/reply.do", method = RequestMethod.POST)
-		public String replyPro(@ModelAttribute("BoardDto") BoardDto boardDto, HttpServletRequest request)
+		
+		// insert reply
+			@RequestMapping(value="/reply.do", method = RequestMethod.POST)
+			public String replyPro(@ModelAttribute("BoardDto") BoardDto boardDto, HttpServletRequest request)
+					throws NamingException,IOException 
+				{
+				System.out.println("답글 달기 인서트");
+				
+				//답글 달기 인서트를 할때는, ref_step 이랑 ref_level 을 설정 해줘야한다.
+				
+				int readcount=0;
+				String ip=request.getRemoteAddr();//ip구하고 
+				
+				boardDto.setIp(ip);
+				boardDto.setReadcount(readcount);
+				
+				sqlSession.update("board.updateRef");
+				sqlSession.insert("board.insertBoard", boardDto);
+				 
+				 
+				return "redirect:list.do";
+			}// ------------------------------------------
+		//=========================================================================
+		
+
+		@RequestMapping("/WriteForm.do")
+		public ModelAndView writeForm(int flag) {
+			BoardDto boardDto = new BoardDto();
+			boardDto.setFlag(flag);
+	       
+			return new ModelAndView("/board/WriteForm","boardDto",boardDto);
+		}//writeForm ()
+
+		// insert
+		@RequestMapping(value="/write.do", method = RequestMethod.POST)
+		public String userWritePro(@ModelAttribute("BoardDto") BoardDto boardDto, HttpServletRequest request, int flag)
 				throws NamingException,IOException 
 			{
+			System.out.println("새글 달기 인서트");
 			int readcount=0;
 			String ip=request.getRemoteAddr();//ip구하고 
 			
 			boardDto.setIp(ip);
+			//boardDto2.setPos(pos);
+			//boardDto2.setDepth(depth);
 			boardDto.setReadcount(readcount);
+			
 			
 			sqlSession.update("board.updateRef");
 			sqlSession.insert("board.insertBoard", boardDto);
@@ -123,75 +160,45 @@ public class BoardController {
 			 
 			return "redirect:list.do";
 		}// ------------------------------------------
-	//=========================================================================
-	
 
-	@RequestMapping("/WriteForm.do")
-	public String writeForm() {
-       return "/board/WriteForm";//뷰
-	}//writeForm ()
 
-	// insert
-	@RequestMapping(value="/write.do", method = RequestMethod.POST)
-	public String userWritePro(@ModelAttribute("BoardDto") BoardDto boardDto, HttpServletRequest request)
-			throws NamingException,IOException 
-		{
-		
-		int pos=0;
-		int depth=0;
-		int readcount=0;
-		String ip=request.getRemoteAddr();//ip구하고 
-		
-		boardDto.setIp(ip);
-		//boardDto2.setPos(pos);
-		//boardDto2.setDepth(depth);
-		boardDto.setReadcount(readcount);
-		
-		sqlSession.update("board.updateRef");
-		sqlSession.insert("board.insertBoard", boardDto);
+		//조회수 증가 ,글내용보기
+		@RequestMapping("content.do")
+		public ModelAndView getOneBoard(int num) {
+	 		sqlSession.update("board.readCount", new Integer(num));//조회수
+	 		
+	 		BoardDto boardDto = (BoardDto)sqlSession.selectOne("board.selectOne", num);
+	 		 
+	 		return new ModelAndView("/board/content","boardDto",boardDto);
 		 
-		 
-		return "redirect:list.do";
-	}// ------------------------------------------
-
-
-	//조회수 증가 ,글내용보기
-	@RequestMapping("content.do")
-	public ModelAndView getOneBoard(int num) {
- 		sqlSession.update("board.readCount", new Integer(num));//조회수
- 		
- 		BoardDto boardDto = (BoardDto)sqlSession.selectOne("board.selectOne", num);
- 		 
- 		return new ModelAndView("/board/content","boardDto",boardDto);
-	 
-	}//getOneBoard()
-	
-	//글수정 폼
-		@RequestMapping(value="/edit.do", method = RequestMethod.GET)
-		public ModelAndView userEdit(int num) {
-			BoardDto boardDto = (BoardDto)sqlSession.selectOne("board.selectOne", num);
-		 
-	 		return new ModelAndView("/board/edit","boardDto",boardDto);
-		}// ---
+		}//getOneBoard()
 		
-		//글수정 
-		@RequestMapping(value = "/edit.do", method = RequestMethod.POST)
-		public String updateBoard(@ModelAttribute("boardDto") BoardDto boardDto) 
-				throws NamingException,IOException
-		{
-			sqlSession.update("board.updateBoard", boardDto);
+		//글수정 폼
+			@RequestMapping(value="/edit.do", method = RequestMethod.GET)
+			public ModelAndView userEdit(int num) {
+				BoardDto boardDto = (BoardDto)sqlSession.selectOne("board.selectOne", num);
 			 
-			return "redirect:list.do";
-		}
+		 		return new ModelAndView("/board/edit","boardDto",boardDto);
+			}// ---
+			
+			//글수정 
+			@RequestMapping(value = "/edit.do", method = RequestMethod.POST)
+			public String updateBoard(@ModelAttribute("boardDto") BoardDto boardDto) 
+					throws NamingException,IOException
+			{
+				sqlSession.update("board.updateBoard", boardDto);
+				 
+				return "redirect:list.do";
+			}
 
-		//글삭제
-		@RequestMapping("delete.do")
-		public String deleteBoard(int num) throws NamingException,IOException {
-			sqlSession.delete("board.deleteBoard", num);
-			 
-			return "redirect:list.do";
-		}
+			//글삭제
+			@RequestMapping("delete.do")
+			public String deleteBoard(int num) throws NamingException,IOException {
+				sqlSession.delete("board.deleteBoard", num);
+				 
+				return "redirect:list.do";
+			}
 
-	
-}//class end
+		
+	}//class end
 
