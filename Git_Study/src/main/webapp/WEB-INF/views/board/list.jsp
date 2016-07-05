@@ -8,7 +8,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Board2 예제 리스트</title>
+<title>깃 연동 테스트중 입니다. Board2 예제 리스트</title>
 
 <style type="text/css">
   table{
