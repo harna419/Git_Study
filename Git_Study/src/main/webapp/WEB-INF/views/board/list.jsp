@@ -30,6 +30,8 @@
 
 <h2 align="center">게시판 리스트</h2>
 
+
+<center>${allRecord }</center>
 <table width="800" border="1" align="center">
 <tr>
 <td align="right">
@@ -37,6 +39,7 @@
 </td>
 </tr>
 </table>
+
 
 <table width="800" border=1 align="center">
 	<tr>
@@ -69,12 +72,20 @@
 <table border="1" width="800" align="center">
 	<tr>
 	<td>
-	<!-- list.do에 들어왔을때, 필요한 변수, 현재페이지, 시작레코드, 끝 레코드, -->
-	<c:forEach var="i" begin="1" end="10" step="1"	>
 	
+	
+	<c:forEach var="i" begin="${startRecord+1}" end="${startRecord+10}" step="1">
+	
+		
+		<c:if test="${startRecord} == ${ allRecord }">
+		
+		</c:if>
+		
 		<a href="list.do?pageNum=${i } }">[${i }]</a>
 		
 	</c:forEach>
+	
+	 
 	</td>
 	</tr>
 </table>

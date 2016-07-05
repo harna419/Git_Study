@@ -6,7 +6,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 <mapper namespace="board">
  
    <select id="selectAll" resultType="java.util.HashMap">
-        SELECT * FROM  board order by ref asc;
+        SELECT * FROM  board order by ref asc, ref_step asc;
    </select>
 
    <insert id="insertBoard" parameterType="model.board.BoardDto">

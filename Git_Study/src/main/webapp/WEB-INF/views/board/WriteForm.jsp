@@ -86,7 +86,7 @@ function flagCheck(){
  	
  		<tr>
           <td>글쓴이</td>
-          <td><input type="text" id="writer" name="writer" size="10" value="${falg }" /> </td>
+          <td><input type="text" id="writer" name="writer" size="10" /> </td>
         </tr>
  		<tr>
           <td>글제목</td>
@@ -117,6 +117,7 @@ function flagCheck(){
             
             <input type="reset" value="입력한내용취소">
             <input type="hidden" id="flag" name="flag" value="${boardDto.flag}">
+            <input type="hidden" id="num" name="num" value="${boardDto.num}">
             
           </td>
         </tr>
