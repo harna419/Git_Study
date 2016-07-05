@@ -8,7 +8,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Git러브 테스트 프로젝트 Board 예제 리스트 다시 테스트 한다.</title>
+<title>Git러브 테스트 프로젝트 Board 예제 리스트</title>
 
 <style type="text/css">
   table{
