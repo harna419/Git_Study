@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>co.kr</groupId>
 	<artifactId>han</artifactId>
-	<name>Git_Study</name>
+	<name>Git_Study_Board</name>
 	<packaging>war</packaging>
 	<version>1.0.0-BUILD-SNAPSHOT</version>
 	<properties>
